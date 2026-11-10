@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MacBook Air Training — St. Anne's Teachers</title>
+<style>
+  :root{
+    --accent:#e07a2f;
+    --accent-soft:#fdf0e3;
+    --accent-dark:#b85c14;
+    --bg:#f6f5f2;
+    --card:#ffffff;
+    --text:#1d1d1f;
+    --muted:#6e6e73;
+    --line:#e5e2dd;
+    --green:#1e8e4f;
+    --green-soft:#e6f6ec;
+    --red:#cf3f3f;
+    --red-soft:#fdecec;
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.55;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 16px 64px}
+  header{
+    text-align:center;
+    padding:28px 8px 8px;
+  }
+  header .emoji{font-size:44px}
+  h1{font-size:28px;margin:6px 0 2px;letter-spacing:-.02em}
+  header p{color:var(--muted);margin:4px 0 0;font-size:15px}
+  nav.tabs{
+    display:flex;gap:8px;margin:18px 0 20px;
+    background:#eceae6;border-radius:999px;padding:5px;
+  }
+  nav.tabs button{
+    flex:1;min-height:48px;border:0;border-radius:999px;background:transparent;
+    font-size:16px;font-weight:600;color:var(--muted);cursor:pointer;
+    font-family:inherit;
+  }
+  nav.tabs button.active{background:#fff;color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+  .view{display:none}
+  .view.active{display:block}
+  .card{
+    background:var(--card);border-radius:var(--radius);
+    padding:20px;margin-bottom:16px;
+    box-shadow:0 1px 3px rgba(0,0,0,.06);
+  }
+  h2{font-size:20px;margin:0 0 6px;letter-spacing:-.01em}
+  h3{font-size:17px;margin:22px 0 8px}
+  p{margin:8px 0}
+  .muted{color:var(--muted)}
+  .small{font-size:13px}
+  /* progress */
+  .progress-wrap{margin:14px 0 6px}
+  .progress-bar{
+    height:14px;background:#eceae6;border-radius:999px;overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;width:0%;background:var(--accent);border-radius:999px;
+    transition:width .4s ease;
+  }
+  .progress-text{font-size:18px;font-weight:700;margin:8px 0 0}
+  .badge{
+    background:var(--accent-soft);border:2px solid var(--accent);
+    border-radius:var(--radius);padding:18px;text-align:center;margin-top:16px;
+  }
+  .badge .big{font-size:34px}
+  .badge h3{margin:6px 0 4px;font-size:19px}
+  /* lesson list */
+  .lesson-row{
+    display:flex;align-items:center;gap:14px;width:100%;
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px;margin-bottom:10px;cursor:pointer;text-align:left;
+    font-family:inherit;min-height:64px;
+  }
+  .lesson-row:active{background:var(--accent-soft)}
+  .lesson-row .icon{font-size:30px;flex-shrink:0;width:40px;text-align:center}
+  .lesson-row .body{flex:1;min-width:0}
+  .lesson-row .title{font-size:17px;font-weight:700}
+  .lesson-row .meta{font-size:13px;color:var(--muted)}
+  .check-circle{
+    width:30px;height:30px;border-radius:50%;flex-shrink:0;
+    border:2px solid #cfccc6;display:flex;align-items:center;justify-content:center;
+    font-size:17px;color:#fff;font-weight:700;
+  }
+  .check-circle.done{background:var(--green);border-color:var(--green)}
+  /* steps */
+  .step{
+    display:flex;gap:12px;align-items:flex-start;
+    padding:14px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px;
+    cursor:pointer;
+  }
+  .step input[type=checkbox]{
+    width:24px;height:24px;flex-shrink:0;margin-top:2px;accent-color:var(--accent);cursor:pointer;
+  }
+  .step .step-num{
+    font-weight:800;color:var(--accent);flex-shrink:0;width:22px;text-align:center;
+  }
+  .step .step-text{flex:1}
+  .step .try{
+    display:block;margin-top:6px;background:var(--accent-soft);
+    border-radius:8px;padding:8px 10px;font-size:14px;
+  }
+  .step .try b{color:var(--accent-dark)}
+  .step.checked{background:#fbf7f2;border-color:#e8d9c6}
+  .step.checked .step-text{color:var(--muted)}
+  /* quiz */
+  .quiz-q{margin-bottom:18px}
+  .quiz-q .q{font-weight:700;margin-bottom:10px}
+  .quiz-opt{
+    display:block;width:100%;text-align:left;min-height:48px;
+    padding:12px 14px;margin-bottom:8px;border-radius:12px;
+    border:1.5px solid var(--line);background:#fff;cursor:pointer;
+    font-size:15px;font-family:inherit;color:var(--text);
+  }
+  .quiz-opt.correct{background:var(--green-soft);border-color:var(--green);font-weight:600}
+  .quiz-opt.wrong{background:var(--red-soft);border-color:var(--red)}
+  .quiz-opt:disabled{cursor:default;opacity:.85}
+  .quiz-feedback{font-size:14px;margin-top:4px;display:none}
+  .quiz-feedback.show{display:block}
+  .quiz-feedback.good{color:var(--green);font-weight:600}
+  .quiz-feedback.bad{color:var(--red);font-weight:600}
+  .quiz-feedback .explain{display:block;color:var(--text);font-weight:400;margin-top:2px}
+  /* buttons */
+  .btn{
+    display:inline-block;min-height:52px;padding:14px 22px;border:0;border-radius:999px;
+    background:var(--accent);color:#fff;font-size:17px;font-weight:700;cursor:pointer;
+    font-family:inherit;width:100%;
+  }
+  .btn:active{background:var(--accent-dark)}
+  .btn.secondary{background:#eceae6;color:var(--text)}
+  .btn.done{background:var(--green)}
+  .link-btn{
+    background:none;border:0;color:var(--accent-dark);font-size:15px;font-weight:600;
+    cursor:pointer;padding:10px 0;font-family:inherit;text-decoration:underline;
+  }
+  .back-btn{
+    background:none;border:0;color:var(--accent-dark);font-size:16px;font-weight:600;
+    cursor:pointer;padding:8px 0;font-family:inherit;min-height:44px;
+  }
+  /* kbd */
+  kbd{
+    background:#f5f5f7;border:1px solid #d2d2d7;border-bottom-width:2px;
+    border-radius:6px;padding:1px 7px;font-family:inherit;font-size:.92em;font-weight:600;
+    white-space:nowrap;
+  }
+  /* cheat sheet */
+  .filter-input{
+    width:100%;min-height:52px;padding:12px 16px;font-size:17px;
+    border:1.5px solid var(--line);border-radius:12px;font-family:inherit;margin-bottom:14px;
+  }
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  th{text-align:left;color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.04em;
+    padding:8px 6px;border-bottom:2px solid var(--line)}
+  td{padding:11px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+  td.keys{white-space:nowrap}
+  .no-results{color:var(--muted);text-align:center;padding:20px 0;display:none}
+  footer{
+    text-align:center;color:var(--muted);font-size:13px;margin-top:28px;
+  }
+  .complete-note{
+    background:var(--green-soft);border:1px solid var(--green);color:var(--green);
+    border-radius:12px;padding:14px;text-align:center;font-weight:700;margin-bottom:14px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="emoji">💻</div>
+    <h1>MacBook Air Training</h1>
+    <p>Short, friendly lessons for St. Anne's teachers — about 5 minutes each.</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button id="tab-home" class="active" onclick="showView('home')">Home</button>
+    <button id="tab-lessons" onclick="showView('lessons')">Lessons</button>
+    <button id="tab-cheatsheet" onclick="showView('cheatsheet')">Cheat Sheet</button>
+  </nav>
+
+  <!-- HOME -->
+  <section id="view-home" class="view active">
+    <div class="card">
+      <h2>Your progress</h2>
+      <div class="progress-wrap">
+        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+      </div>
+      <p id="progress-text" class="progress-text">You're 0% done</p>
+      <p id="progress-sub" class="muted">0 of 10 lessons complete. One lesson at a time — you've got this!</p>
+      <div id="completion-badge" class="badge" style="display:none">
+        <div class="big">🎉</div>
+        <h3>You're a MacBook pro!</h3>
+        <p>All 10 lessons done. You know your way around your MacBook Air — go show it off in class.</p>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Keep going</h2>
+      <p class="muted">Pick up where you left off, or start at the top. Every lesson is short and hands-on.</p>
+      <div id="home-next"></div>
+    </div>
+    <button class="link-btn" onclick="resetProgress()">Start over (reset my progress)</button>
+  </section>
+
+  <!-- LESSONS LIST -->
+  <section id="view-lessons" class="view">
+    <div class="card">
+      <h2>All lessons</h2>
+      <p class="muted">Tap a lesson to open it. Check off each step as you try it, answer the quick quiz, then mark the lesson complete.</p>
+    </div>
+    <div id="lesson-list"></div>
+  </section>
+
+  <!-- LESSON DETAIL -->
+  <section id="view-lesson" class="view">
+    <button class="back-btn" onclick="showView('lessons')">← Back to all lessons</button>
+    <div id="lesson-detail"></div>
+  </section>
+
+  <!-- CHEAT SHEET -->
+  <section id="view-cheatsheet" class="view">
+    <div class="card">
+      <h2>Keyboard shortcut cheat sheet</h2>
+      <p class="muted">The shortcuts worth knowing by heart. Type below to filter the list.</p>
+      <input id="cheat-filter" class="filter-input" type="search" placeholder="Filter shortcuts — try “screenshot”…" oninput="renderCheatSheet()">
+      <table>
+        <thead><tr><th>Shortcut</th><th>What it does</th></tr></thead>
+        <tbody id="cheat-body"></tbody>
+      </table>
+      <p id="cheat-empty" class="no-results">No shortcuts match that — try a different word.</p>
+    </div>
+  </section>
+
+  <footer>v1 (Nov 9) &bull; Made for St. Anne's teachers</footer>
+</div>
+
+<script>
+"use strict";
+
+/* ---------- Data ---------- */
+
+const LESSONS = [
+{
+  id:"meet-mac", num:1, icon:"💻", title:"Meet your MacBook Air", time:"5 min",
+  intro:"Your MacBook Air is the one with no fan — silent, light, and fast. This lesson is the grand tour: the trackpad, the Dock, the menu bar, and how to put it to sleep without losing a thing.",
+  steps:[
+    {text:"The trackpad is your mouse. Click by pressing down or tapping with one finger. Scroll with two fingers, and pinch with two fingers to zoom in.", try:"Open Safari from the Dock and scroll a web page with two fingers."},
+    {text:"The Dock is the row of apps along the bottom of the screen. A small dot under an icon means that app is open right now.", try:"Click the Launchpad icon (the grid of squares) in the Dock to see every app on your Mac."},
+    {text:"The menu bar runs across the very top of the screen. The Apple menu () at the top left is where Sleep, Restart, and Shut Down live.", try:"Click the Apple menu and look at the options — don't click Shut Down yet!"},
+    {text:"Control Center is the icon with two sliders at the top right. It's one place for Wi-Fi, brightness, volume, and screen mirroring.", try:"Open Control Center and slide the brightness up and down."},
+    {text:"Sleep vs. Shut Down: closing the lid puts your Mac to sleep — it wakes instantly and everything is right where you left it. Shut Down fully powers off; use it before a long break or a software update.", try:"Close the lid, wait a few seconds, then open it. You're right back where you left off."}
+  ],
+  quiz:[
+    {q:"What happens when you close the lid of your MacBook Air?",
+     options:["It goes to sleep — your work is right there when you open it","It shuts down completely","It closes all your open windows","It logs you out of everything"],
+     answer:0, explain:"Sleep is instant and safe. Your apps and documents stay open, waiting for you."},
+    {q:"What does the little dot under a Dock icon mean?",
+     options:["The app is currently open","The app needs an update","The app is downloading","The app is in your Favorites"],
+     answer:0, explain:"A dot means the app is running. Right-click the icon for quick options like Quit."}
+  ]
+},
+{
+  id:"spotlight", num:2, icon:"🔍", title:"Spotlight search", time:"5 min",
+  intro:"Spotlight is the fastest way to find anything on your Mac — an app, a file, a contact, even the answer to a math problem. One shortcut opens it, and you never have to go digging through folders.",
+  steps:[
+    {text:"Press Cmd + Space and a search bar appears in the middle of your screen. That's Spotlight.", try:"Press Cmd + Space right now."},
+    {text:"Type the name of an app, then press Enter to open it — no mouse needed.", try:"Type “Calculator” and press Enter."},
+    {text:"Spotlight finds files too. Type part of a file's name and it shows up as you type.", try:"Type “lesson plan” and see which documents match."},
+    {text:"Spotlight does quick math and definitions. Type a sum or a word and the answer appears instantly.", try:"Type “45 + 67” — the answer shows up as you type. Try “define photosynthesis” too."},
+    {text:"Spotlight can even search inside your documents. Type a phrase you know is in a file, like a student's name.", try:"Type a word from one of your documents and open the file straight from the results."}
+  ],
+  quiz:[
+    {q:"How do you open Spotlight?",
+     options:["Cmd + Space","Cmd + F","Ctrl + Space","Cmd + Tab"],
+     answer:0, explain:"Cmd + Space, from anywhere, any time. It's the one shortcut worth memorizing first."},
+    {q:"Which of these can Spotlight do?",
+     options:["Open apps","Find files","Do quick math","All of these"],
+     answer:3, explain:"Spotlight does all of it — apps, files, contacts, math, definitions, and more."}
+  ]
+},
+{
+  id:"finder", num:3, icon:"📁", title:"Finder", time:"5 min",
+  intro:"Finder is your file cabinet — the smiling-face icon in the Dock. Every document, photo, and download on your Mac lives here. Learn a few tricks and you'll never lose a file again.",
+  steps:[
+    {text:"Finder is the smiling-face icon at the left end of the Dock. Click it to open a Finder window.", try:"Click the Finder icon in the Dock."},
+    {text:"The sidebar has your Favorites: Recents, Documents, Downloads, and iCloud Drive. One click jumps you there.", try:"Click Downloads in the sidebar to see what you've downloaded lately."},
+    {text:"Quick Look lets you peek at a file without opening it. Click a file once to select it, then press the Space bar.", try:"Select a photo or PDF and press Space to preview it. Press Space again to close."},
+    {text:"Change how files are shown with the view buttons at the top of the Finder window: icons, list, or columns.", try:"Switch to List view, then try Columns — pick the one you like best."},
+    {text:"Tags are colored labels you can stick on files. Right-click a file, choose Tags, and add a color.", try:"Tag a file red, then click the red tag in the sidebar to find it fast."},
+    {text:"Sort your files so the newest is on top. In List view, click a column header like “Date Modified”; or use View → Sort By.", try:"Open Downloads and sort by Date Added so today's files are on top."}
+  ],
+  quiz:[
+    {q:"How do you preview a file without opening it?",
+     options:["Select it and press the Space bar","Double-click it","Right-click and choose Open","Drag it to the Dock"],
+     answer:0, explain:"Space bar = Quick Look. It works for photos, PDFs, videos, and most documents."},
+    {q:"Where do files you download from the internet usually land?",
+     options:["The Downloads folder","The Desktop","The Trash","iCloud Drive"],
+     answer:0, explain:"Downloads is the default landing spot. Check the sidebar in any Finder window."}
+  ]
+},
+{
+  id:"builtin-apps", num:4, icon:"🧰", title:"Built-in apps tour", time:"5 min",
+  intro:"Your Mac comes with a whole toolbox already installed — no downloads, no cost. Here's what each app is for, and one small thing to try in each.",
+  steps:[
+    {text:"Safari is your web browser. It's fast, and it syncs your bookmarks with your iPhone.", try:"Open Safari and press Cmd + T to open a new tab."},
+    {text:"Mail handles email. You can add your school Gmail account there, or just keep using Gmail in Safari — either works.", try:"Open Mail. If your Gmail isn't in there, go to Mail → Settings → Accounts to add it."},
+    {text:"Notes is for quick notes, checklists, and ideas. It syncs to your phone, too.", try:"Open Notes, press Cmd + N, and type a note to yourself."},
+    {text:"Calendar keeps your schedule — classes, meetings, and reminders in one place.", try:"Open Calendar and add tomorrow's first class."},
+    {text:"Pages, Keynote, and Numbers are Apple's versions of Word, PowerPoint, and Excel — and they open those file types, too.", try:"Open Pages and start a blank document."},
+    {text:"Preview opens PDFs and images, and lets you mark them up — circle things, add text, sign forms.", try:"Open any PDF in Preview and click the markup pen icon."},
+    {text:"Photos holds your pictures and can find them by what's in them — try searching for “dog” or “classroom.”", try:"Open Photos and search for a picture by what's in it."}
+  ],
+  quiz:[
+    {q:"Which app is best for jotting down a quick note during a meeting?",
+     options:["Notes","Preview","Calendar","Photos"],
+     answer:0, explain:"Notes is made for quick captures — and it syncs to your iPhone automatically."},
+    {q:"Which app opens PDFs and lets you mark them up?",
+     options:["Preview","Safari","Pages","Mail"],
+     answer:0, explain:"Preview handles PDFs and images, with a built-in markup pen for circling and signing."}
+  ]
+}
+];
+
+LESSONS.push(
+{
+  id:"shortcuts", num:5, icon:"⌨️", title:"Keyboard shortcuts", time:"5 min",
+  intro:"Shortcuts are the closest thing to a superpower on a Mac. You don't need all of them — just these fifteen, and you'll do in seconds what used to take a minute of clicking. The Cmd key (⌘) is the one next to the Space bar.",
+  steps:[
+    {text:"Copy is Cmd + C, Paste is Cmd + V. Highlight some text, copy it, and paste it somewhere else.", try:"Copy this sentence and paste it into a new note in Notes."},
+    {text:"Cut is Cmd + X (it removes the text and copies it), and Undo is Cmd + Z — your best friend when something goes wrong.", try:"Cut a word from a document, then press Cmd + Z to undo it."},
+    {text:"Select All is Cmd + A, and Save is Cmd + S. In most apps, Cmd + S saves your work.", try:"Open a document, press Cmd + A to select everything, then Cmd + S to save."},
+    {text:"Quit an app with Cmd + Q. Close just the current window with Cmd + W — the app stays open.", try:"Open Safari, then press Cmd + W to close the window (Safari itself stays running)."},
+    {text:"Switch between open apps with Cmd + Tab. Hold Cmd and tap Tab to hop from one app to the next.", try:"Open two apps, then hold Cmd and tap Tab to switch between them."},
+    {text:"Cmd + Space opens Spotlight, and Cmd + Shift + 4 lets you screenshot just part of your screen.", try:"Press Cmd + Shift + 4 and drag a box around part of your screen to capture it."},
+    {text:"Cmd + comma (,) opens the Settings of whichever app you're using right now.", try:"Open Safari, then press Cmd + comma to peek at Safari's settings."}
+  ],
+  quiz:[
+    {q:"You just deleted a paragraph by accident. What do you press?",
+     options:["Cmd + Z","Cmd + X","Cmd + Q","Cmd + S"],
+     answer:0, explain:"Cmd + Z is Undo — it takes back your last action. Press it again to undo one more."},
+    {q:"How do you switch between your open apps?",
+     options:["Cmd + Tab","Cmd + Space","Cmd + W","Cmd + A"],
+     answer:0, explain:"Hold Cmd and tap Tab. Keep tapping Tab to move through your open apps."}
+  ]
+},
+{
+  id:"screenshots", num:6, icon:"📸", title:"Screenshots & screen recording", time:"5 min",
+  intro:"Need to show someone what you see on your screen? A screenshot is worth a thousand words — and recording a quick how-to video is almost as easy. Everything here uses three shortcuts.",
+  steps:[
+    {text:"Cmd + Shift + 3 captures your whole screen. A little thumbnail pops up in the bottom-right corner.", try:"Press Cmd + Shift + 3 and watch for the thumbnail."},
+    {text:"Cmd + Shift + 4 lets you drag a box around just the part you want — a window, a button, a paragraph.", try:"Press Cmd + Shift + 4 and capture just one small area of your screen."},
+    {text:"Cmd + Shift + 5 opens the screenshot toolbar, with options for screenshots and screen recording.", try:"Press Cmd + Shift + 5 and look at the options along the bottom."},
+    {text:"By default, screenshots save to your Desktop. Look for a file starting with “Screen Shot.”", try:"Check your Desktop for the screenshots you just took."},
+    {text:"To mark up a screenshot, click its thumbnail when it appears. You can draw, circle things, add text, or crop.", try:"Take a screenshot, click the thumbnail, and circle something with the pen tool."},
+    {text:"To record a quick how-to video: Cmd + Shift + 5, choose Record Entire Screen (or a portion), then click Record. Click the stop button in the menu bar when you're done.", try:"Record a 10-second clip of yourself opening an app, then watch it back."}
+  ],
+  quiz:[
+    {q:"Which shortcut captures your whole screen?",
+     options:["Cmd + Shift + 3","Cmd + Shift + 4","Cmd + Shift + 5","Cmd + Space"],
+     answer:0, explain:"3 is the whole screen, 4 is a selection you drag, and 5 opens the toolbar with all the options."},
+    {q:"Where do screenshots save by default?",
+     options:["The Desktop","The Downloads folder","The Documents folder","The Trash"],
+     answer:0, explain:"They land on the Desktop. You can change that in the Cmd + Shift + 5 options menu."}
+  ]
+},
+{
+  id:"screen-sharing", num:7, icon:"📺", title:"Screen sharing", time:"5 min",
+  intro:"Sharing your screen is how you show the class a website, a document, or a video — without everyone crowding around your laptop. Three ways to do it, depending on where you're presenting.",
+  steps:[
+    {text:"In a Google Meet, click “Present now” at the bottom, then choose a window, a tab, or your entire screen. A single window is the safest choice — the class only sees that one thing.", try:"In your next Meet, present a single window instead of your whole screen."},
+    {text:"To show your Mac on the classroom display, open Control Center and click Screen Mirroring, then pick the display or Apple TV.", try:"Open Control Center and look for Screen Mirroring — you'll see the nearby displays listed."},
+    {text:"The built-in Screen Sharing app lets you connect to another Mac. Open Spotlight, type “Screen Sharing,” and enter the other Mac's name or address.", try:"Open Spotlight, type “Screen Sharing,” and look at the address field."},
+    {text:"Before you share, hide anything private: close extra tabs, and turn on Do Not Disturb so notifications don't pop up in front of the class.", try:"Open Control Center → Focus → Do Not Disturb before your next share."},
+    {text:"To stop sharing: in Meet, click “Stop presenting.” For AirPlay, go back to Control Center → Screen Mirroring → Stop Mirroring.", try:"Practice stopping a share — it's the part people forget."}
+  ],
+  quiz:[
+    {q:"In Google Meet, what is the button for sharing your screen called?",
+     options:["Present now","Share screen","Broadcast","Show my Mac"],
+     answer:0, explain:"“Present now” is at the bottom of the Meet window. Choose a window for the tidiest share."},
+    {q:"To mirror your Mac to the classroom display, where do you start?",
+     options:["Control Center → Screen Mirroring","The Apple menu","Spotlight","System Settings → Displays"],
+     answer:0, explain:"Control Center (top right) → Screen Mirroring shows the nearby displays and Apple TVs."}
+  ]
+},
+{
+  id:"google-drive", num:8, icon:"☁️", title:"Google Drive", time:"5 min",
+  intro:"Google Drive is where the school's files live. It's in your browser — nothing to install. Find files fast, share them with colleagues, and never lose a document again.",
+  steps:[
+    {text:"Drive lives at drive.google.com in your browser. “My Drive” is your own files; “Shared with me” is what colleagues sent you.", try:"Open drive.google.com and look at My Drive."},
+    {text:"The search bar at the top finds files by name — and even by words inside the document.", try:"Search for a file you made last week."},
+    {text:"To share a file, select it and click the Share button, then add a colleague's email address.", try:"Share a file with one colleague and set them as Viewer."},
+    {text:"Link settings decide who can open a file. In the Share window, “Restricted” means only people you name; “Anyone with the link” lets anyone who has the link open it.", try:"Check the link setting on a file you've shared — is it Restricted or Anyone with the link?"},
+    {text:"“Make a copy” gives you your own editable version of a file someone shared with you. Right-click the file and choose it.", try:"Make a copy of a shared template so you can edit your own version."},
+    {text:"Working offline: in Drive's settings, turn on Offline, and your recent files will open even without Wi-Fi (in Chrome).", try:"Open Drive settings and find the Offline option."}
+  ],
+  quiz:[
+    {q:"To let a colleague edit your file, you…",
+     options:["Share it and set them as Editor","Email them the link and hope for the best","Move it to the Trash","Rename it with their name"],
+     answer:0, explain:"Share → add their email → set them as Editor. Viewer means they can look but not change anything."},
+    {q:"“Make a copy” is for…",
+     options:["Getting your own editable version of a file someone shared with you","Backing up your whole Drive","Duplicating a file by accident","Sharing a file with the whole school"],
+     answer:0, explain:"When someone shares a view-only file, Make a copy gives you a version that's yours to edit."}
+  ]
+},
+{
+  id:"gmail", num:9, icon:"✉️", title:"Gmail", time:"5 min",
+  intro:"Gmail is more than an inbox — its search is a superpower. A few special search words, plus labels and filters, will find any email in seconds and keep the inbox from running your day.",
+  steps:[
+    {text:"Search operators are special words for the search box. Type from:kelly to find every email from Kelly.", try:"Search from: someone you email with often."},
+    {text:"has:attachment finds emails with files attached. Add a word after it to narrow it down.", try:"Search has:attachment pdf to find PDFs people sent you."},
+    {text:"older_than:1y finds mail older than a year — handy for a tidy-up.", try:"Search older_than:1y and see how much old mail is sitting there."},
+    {text:"Labels are like folders, except one message can have several. Create one from the left sidebar.", try:"Create a label called “Grade 4” and apply it to a message."},
+    {text:"Filters do the sorting for you. Search for something, click “Show search options,” then “Create filter” to auto-label matching mail.", try:"Make a filter that labels mail from the principal as “Office.”"},
+    {text:"Send smarter: Undo Send gives you up to 30 seconds to take a message back (Settings → See all settings → Undo Send). The little arrow next to Send lets you schedule a message for later, and the clock icon on any message snoozes it until tomorrow.", try:"Turn on Undo Send and set it to 30 seconds — future you says thanks."}
+  ],
+  quiz:[
+    {q:"To find emails that have files attached, you search…",
+     options:["has:attachment","from:attachment","label:files","in:attachment"],
+     answer:0, explain:"has:attachment is the operator. Try has:attachment pdf to find just the PDFs."},
+    {q:"Undo Send gives you up to how long to take a message back?",
+     options:["30 seconds","5 minutes","1 hour","Until the other person reads it"],
+     answer:0, explain:"30 seconds is the maximum. Turn it on in Settings → See all settings → Undo Send."}
+  ]
+},
+{
+  id:"staying-organized", num:10, icon:"🗂️", title:"Staying organized", time:"5 min",
+  intro:"A tidy Mac is a calm Mac. Mission Control, Split View, Stacks, and Focus are the four tools that keep your screen — and your attention — under control during class.",
+  steps:[
+    {text:"Mission Control shows every open window at once. Press F3, or swipe up with three fingers on the trackpad, or press Ctrl + Up arrow.", try:"Open Mission Control right now and look at all your windows."},
+    {text:"Split View puts two apps side by side. Hover over the green traffic-light button on a window and choose “Tile Window to Left of Screen,” then pick the second app.", try:"Put Safari and Notes side by side."},
+    {text:"Desktop Stacks tidy your Desktop into neat piles by kind — all the PDFs in one stack, all the images in another. Right-click the Desktop and choose “Use Stacks.”", try:"Turn Stacks on and watch your Desktop tidy itself."},
+    {text:"Focus (Do Not Disturb) silences notifications during class. Open Control Center, click Focus, and choose Do Not Disturb.", try:"Turn on Do Not Disturb for one hour and see the moon icon appear in the menu bar."},
+    {text:"Multiple desktops (called Spaces) keep work separate: one desktop for planning, one for class. In Mission Control, drag a window to the top edge to make a new desktop.", try:"In Mission Control, make a second desktop and move a window onto it."}
+  ],
+  quiz:[
+    {q:"Mission Control shows you…",
+     options:["All your open windows at once","Only the app you're using","Your files in the Finder","Your Wi-Fi networks"],
+     answer:0, explain:"One key press (F3) and every window is laid out in front of you. Click one to jump to it."},
+    {q:"To put two apps side by side on the screen, you use…",
+     options:["Split View, from the green window button","Mission Control","Stacks","Screen Mirroring"],
+     answer:0, explain:"Hover the green traffic-light button and choose “Tile Window to Left (or Right) of Screen.”"}
+  ]
+}
+);
+
+/* ---------- Cheat sheet ---------- */
+
+const SHORTCUTS = [
+  {keys:"Cmd + C", what:"Copy the selected text or item"},
+  {keys:"Cmd + X", what:"Cut the selected text or item"},
+  {keys:"Cmd + V", what:"Paste what you copied or cut"},
+  {keys:"Cmd + Z", what:"Undo your last action"},
+  {keys:"Cmd + Shift + Z", what:"Redo (undo the undo)"},
+  {keys:"Cmd + A", what:"Select everything in the current window or document"},
+  {keys:"Cmd + S", what:"Save your work"},
+  {keys:"Cmd + Q", what:"Quit the app you're using"},
+  {keys:"Cmd + W", what:"Close the current window (the app stays open)"},
+  {keys:"Cmd + Tab", what:"Switch between your open apps"},
+  {keys:"Cmd + `", what:"Switch between windows of the same app"},
+  {keys:"Cmd + Space", what:"Open Spotlight search"},
+  {keys:"Cmd + F", what:"Find words in the current document or page"},
+  {keys:"Cmd + P", what:"Print"},
+  {keys:"Cmd + N", what:"Open a new window or document"},
+  {keys:"Cmd + T", what:"Open a new tab (Safari and most browsers)"},
+  {keys:"Cmd + O", what:"Open a file"},
+  {keys:"Cmd + ,", what:"Open the Settings of the app you're using"},
+  {keys:"Cmd + Shift + 3", what:"Screenshot the whole screen"},
+  {keys:"Cmd + Shift + 4", what:"Screenshot a selection you drag"},
+  {keys:"Cmd + Shift + 5", what:"Screenshot toolbar — screenshots and screen recording"},
+  {keys:"Cmd + Delete", what:"Move the selected item to the Trash"},
+  {keys:"Cmd + Option + Esc", what:"Force Quit — close an app that's frozen"},
+  {keys:"Ctrl + Up arrow", what:"Open Mission Control (or press F3, or swipe up with three fingers)"},
+  {keys:"Cmd + Shift + Q", what:"Log out of your Mac (you'll be asked to confirm)"}
+];
+
+/* ---------- State (localStorage) ---------- */
+
+const STORE_KEY = "mac-training-v1";
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(!raw) return {done:{}, steps:{}, quiz:{}};
+    const s = JSON.parse(raw);
+    return {done:s.done||{}, steps:s.steps||{}, quiz:s.quiz||{}};
+  }catch(e){
+    return {done:{}, steps:{}, quiz:{}};
+  }
+}
+let state = loadState();
+
+function saveState(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){ /* storage full or blocked — app still works */ }
+}
+
+function lessonById(id){ return LESSONS.find(function(l){ return l.id===id; }); }
+function doneCount(){ return LESSONS.filter(function(l){ return state.done[l.id]; }).length; }
+
+/* ---------- Navigation ---------- */
+
+function showView(name){
+  var views = ["home","lessons","lesson","cheatsheet"];
+  views.forEach(function(v){
+    document.getElementById("view-"+v).classList.toggle("active", v===name);
+  });
+  ["home","lessons","cheatsheet"].forEach(function(t){
+    var tab = document.getElementById("tab-"+t);
+    if(tab) tab.classList.toggle("active", t===name || (name==="lesson" && t==="lessons"));
+  });
+  if(name==="home") renderHome();
+  if(name==="lessons") renderLessonList();
+  if(name==="cheatsheet") renderCheatSheet();
+  window.scrollTo(0,0);
+}
+
+/* ---------- Home ---------- */
+
+function renderHome(){
+  var total = LESSONS.length, done = doneCount();
+  var pct = Math.round(done/total*100);
+  document.getElementById("progress-fill").style.width = pct + "%";
+  document.getElementById("progress-text").textContent = "You're " + pct + "% done";
+  document.getElementById("progress-sub").textContent =
+    done + " of " + total + " lessons complete. " +
+    (done===0 ? "Start with lesson 1 — it only takes about 5 minutes." :
+     done===total ? "Every lesson done. Nicely done, teacher!" :
+     "One lesson at a time — you've got this!");
+  document.getElementById("completion-badge").style.display = done===total ? "block" : "none";
+
+  var next = LESSONS.find(function(l){ return !state.done[l.id]; });
+  var box = document.getElementById("home-next");
+  if(next){
+    box.innerHTML =
+      '<p><strong>Up next:</strong> Lesson ' + next.num + ' — ' + escapeHtml(next.title) + '</p>' +
+      '<button class="btn" onclick="openLesson(\'' + next.id + '\')">Start lesson ' + next.num + '</button>';
+  }else{
+    box.innerHTML =
+      '<p><strong>All done!</strong> Revisit any lesson any time, or keep the cheat sheet handy.</p>' +
+      '<button class="btn secondary" onclick="showView(\'cheatsheet\')">Open the cheat sheet</button>';
+  }
+}
+
+function resetProgress(){
+  if(!confirm("Start over? This clears your checkmarks and completed lessons on this device.")) return;
+  state = {done:{}, steps:{}, quiz:{}};
+  saveState();
+  renderHome();
+  renderLessonList();
+}
+
+/* ---------- Lesson list ---------- */
+
+function renderLessonList(){
+  var html = "";
+  LESSONS.forEach(function(l){
+    var done = !!state.done[l.id];
+    html +=
+      '<button class="lesson-row" onclick="openLesson(\'' + l.id + '\')">' +
+        '<span class="icon" aria-hidden="true">' + l.icon + '</span>' +
+        '<span class="body"><span class="title">Lesson ' + l.num + ': ' + escapeHtml(l.title) + '</span><br>' +
+        '<span class="meta">' + l.time + ' &bull; ' + l.steps.length + ' steps &bull; ' + l.quiz.length + ' quiz questions</span></span>' +
+        '<span class="check-circle' + (done ? ' done' : '') + '">' + (done ? '✓' : '') + '</span>' +
+      '</button>';
+  });
+  document.getElementById("lesson-list").innerHTML = html;
+}
+
+/* ---------- Lesson detail ---------- */
+
+function openLesson(id){
+  var l = lessonById(id);
+  if(!l) return;
+  var checked = state.steps[l.id] || {};
+  var html = '<div class="card">';
+  if(state.done[l.id]){
+    html += '<div class="complete-note">✓ Lesson complete — nice work!</div>';
+  }
+  html += '<h2>Lesson ' + l.num + ': ' + escapeHtml(l.title) + '</h2>' +
+    '<p class="muted">' + l.time + ' &bull; ' + l.icon + '</p>' +
+    '<p>' + escapeHtml(l.intro) + '</p></div>';
+
+  html += '<div class="card"><h2>Try it yourself</h2><p class="muted">Work through the steps on your Mac. Tap the box when you\'ve tried each one.</p>';
+  l.steps.forEach(function(s, i){
+    var isChecked = !!checked[i];
+    html += '<label class="step' + (isChecked ? ' checked' : '') + '">' +
+      '<input type="checkbox" data-lesson="' + l.id + '" data-step="' + i + '"' + (isChecked ? ' checked' : '') + ' onchange="toggleStep(this)">' +
+      '<span class="step-num">' + (i+1) + '</span>' +
+      '<span class="step-text">' + formatStepText(s.text) +
+        '<span class="try"><b>Try it:</b> ' + formatStepText(s.try) + '</span>' +
+      '</span></label>';
+  });
+  html += '</div>';
+
+  html += '<div class="card"><h2>Quick quiz</h2><p class="muted">Two questions — no pressure, just a check. Tap an answer to see how you did.</p>';
+  l.quiz.forEach(function(q, qi){
+    var chosen = (state.quiz[l.id] && state.quiz[l.id][qi] != null) ? state.quiz[l.id][qi] : null;
+    html += '<div class="quiz-q"><p class="q">' + (qi+1) + '. ' + escapeHtml(q.q) + '</p>';
+    q.options.forEach(function(opt, oi){
+      var cls = "";
+      if(chosen != null){
+        if(oi === q.answer) cls = " correct";
+        else if(oi === chosen) cls = " wrong";
+      }
+      html += '<button class="quiz-opt' + cls + '" data-lesson="' + l.id + '" data-q="' + qi + '" data-opt="' + oi + '"' +
+        (chosen != null ? ' disabled' : '') + ' onclick="answerQuiz(this)">' + escapeHtml(opt) + '</button>';
+    });
+    var fb = "";
+    if(chosen != null){
+      var good = chosen === q.answer;
+      fb = '<p class="quiz-feedback show ' + (good ? 'good' : 'bad') + '">' +
+        (good ? '✓ Correct!' : '✗ Not quite — the answer is “' + escapeHtml(q.options[q.answer]) + '.”') +
+        '<span class="explain">' + escapeHtml(q.explain) + '</span></p>';
+    }else{
+      fb = '<p class="quiz-feedback" id="fb-' + l.id + '-' + qi + '"></p>';
+    }
+    html += fb + '</div>';
+  });
+  html += '</div>';
+
+  var done = !!state.done[l.id];
+  html += '<button class="btn' + (done ? ' done' : '') + '" onclick="markComplete(\'' + l.id + '\')">' +
+    (done ? '✓ Lesson complete' : 'Mark lesson complete') + '</button>';
+
+  document.getElementById("lesson-detail").innerHTML = html;
+  showView("lesson");
+}
+
+function toggleStep(checkbox){
+  var id = checkbox.getAttribute("data-lesson");
+  var i = parseInt(checkbox.getAttribute("data-step"), 10);
+  if(!state.steps[id]) state.steps[id] = {};
+  state.steps[id][i] = checkbox.checked;
+  saveState();
+  checkbox.closest(".step").classList.toggle("checked", checkbox.checked);
+}
+
+function answerQuiz(btn){
+  var id = btn.getAttribute("data-lesson");
+  var qi = parseInt(btn.getAttribute("data-q"), 10);
+  var oi = parseInt(btn.getAttribute("data-opt"), 10);
+  var l = lessonById(id);
+  var q = l.quiz[qi];
+  if(!state.quiz[id]) state.quiz[id] = {};
+  state.quiz[id][qi] = oi;
+  saveState();
+
+  var container = btn.closest(".quiz-q");
+  var opts = container.querySelectorAll(".quiz-opt");
+  opts.forEach(function(o){
+    var oIdx = parseInt(o.getAttribute("data-opt"), 10);
+    o.disabled = true;
+    if(oIdx === q.answer) o.classList.add("correct");
+    else if(oIdx === oi) o.classList.add("wrong");
+  });
+  var good = oi === q.answer;
+  var fb = container.querySelector(".quiz-feedback");
+  fb.className = "quiz-feedback show " + (good ? "good" : "bad");
+  fb.innerHTML = (good ? "✓ Correct!" : "✗ Not quite — the answer is “" + escapeHtml(q.options[q.answer]) + ".”") +
+    '<span class="explain">' + escapeHtml(q.explain) + '</span>';
+}
+
+function markComplete(id){
+  state.done[id] = true;
+  saveState();
+  openLesson(id);
+  renderHome();
+}
+
+/* ---------- Cheat sheet ---------- */
+
+function renderCheatSheet(){
+  var filter = (document.getElementById("cheat-filter").value || "").trim().toLowerCase();
+  var rows = SHORTCUTS.filter(function(s){
+    return !filter || s.keys.toLowerCase().indexOf(filter) !== -1 || s.what.toLowerCase().indexOf(filter) !== -1;
+  });
+  var html = "";
+  rows.forEach(function(s){
+    var keysHtml = s.keys.split(" + ").map(function(k){ return "<kbd>" + escapeHtml(k) + "</kbd>"; }).join(" + ");
+    html += '<tr><td class="keys">' + keysHtml + '</td><td>' + escapeHtml(s.what) + '</td></tr>';
+  });
+  document.getElementById("cheat-body").innerHTML = html;
+  document.getElementById("cheat-empty").style.display = rows.length ? "none" : "block";
+}
+
+/* ---------- Helpers ---------- */
+
+function escapeHtml(str){
+  return String(str)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+
+function formatStepText(str){
+  // Render "Cmd + Space" style phrases as keyboard keys, keeping the rest as plain text.
+  var safe = escapeHtml(str);
+  var KEY = "(?:Cmd|Ctrl|Option|Shift|[A-Z]|[0-9]|Space|Tab|Enter|Delete|comma|F3|Up arrow|Fn|`)";
+  var re = new RegExp(KEY + "(?:\\s*\\+\\s*" + KEY + ")+|\\b(?:Space|Enter|F3|Tab)\\b", "g");
+  return safe.replace(re, function(m){
+    return m.split(/\s*\+\s*/).map(function(k){ return "<kbd>" + k + "</kbd>"; }).join(" + ");
+  });
+}
+
+/* ---------- Init ---------- */
+
+renderHome();
+renderLessonList();
+renderCheatSheet();
+</script>
+</body>
+</html>
